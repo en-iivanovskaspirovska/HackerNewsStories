@@ -5,16 +5,13 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 describe('AppComponent', () => {
   let httpTestingController:HttpTestingController;
-  let app: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent, HttpClientTestingModule],
-      declarations: [AppComponent],
       providers: [{provide: 'BASE_URL', useValue: 'https://localhost:7047/stories'}]
     }).compileComponents();
     fixture = TestBed.createComponent(AppComponent);
-    app = fixture.componentInstance;
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
@@ -38,6 +35,8 @@ describe('AppComponent', () => {
   });
 
   it('should show hacker news stories on load', () => {
+    var app = fixture.componentInstance;
+
     const stories: Story[] = [
       {title: 'First Story', url: 'http://storyurl1.com/1'},
       {title: 'Second Story', url: 'http://storyurl1.com/2'},
