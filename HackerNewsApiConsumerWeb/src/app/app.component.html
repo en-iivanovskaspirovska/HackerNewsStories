@@ -1,0 +1,23 @@
+<main class="main">
+  <div class="bd-content">
+    <div class="container">
+    <h1>Hacker News Stories</h1>
+
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="Filter story by title" #filter aria-describedby="button-addon2">
+      <button class="btn btn-outline-secondary" type="button" id="button-addon2"(click)="filterResults(filter.value)">Search</button>
+    </div>   
+   
+   <table>
+      <tr *ngFor="let story of filteredStories | paginate: {itemsPerPage:15, currentPage: page}">
+        <td>
+          <a *ngIf="story.url" href="{{story.url}}">{{ story.title }}</a>
+          <span *ngIf="!story.url">{{ story.title }}</span>
+        </td>
+      </tr>
+   </table>
+   <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  </div>
+</div>
+</main>
+<router-outlet />

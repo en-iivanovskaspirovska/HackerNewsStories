@@ -396,3 +396,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/HackerNewsApiConsumerWeb/.angular/cache/17.3.3
