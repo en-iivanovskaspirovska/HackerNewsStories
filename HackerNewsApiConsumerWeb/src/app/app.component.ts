@@ -14,21 +14,24 @@ import { NgxPaginationModule } from 'ngx-pagination';
 })
 export class AppComponent implements OnInit{
   title = 'HackerNewsApiConsumer';
-  httpClient = inject(HttpClient);
   stories: Story[] = [];
   page: any;
   filteredStories: Story[] = [];
+ 
+  constructor(private httpClient: HttpClient) { }
+  ngOnInit():void{
+    this.fetchStories();
+    }
+ 
   fetchStories():void{
     this.httpClient.get<Story[]>('https://localhost:7047/stories').subscribe((data)=>{
     this.stories = data;
     this.filteredStories = data;
-    console.log(this.stories);
+    //console.log(this.stories);
     });
   }
-  ngOnInit():void{
-  this.fetchStories();
-  }
-
+ 
+ 
   filterResults(text:string){
     if(!text){
       this.filteredStories=this.stories;

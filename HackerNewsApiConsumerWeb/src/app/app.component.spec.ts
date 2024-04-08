@@ -1,52 +1,78 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { Story } from './models/story';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
+ 
 describe('AppComponent', () => {
-  let httpTestingController:HttpTestingController;
+  let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
+  let httpClient: HttpClient;
+  let httpTestingController: HttpTestingController;
+ 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent, HttpClientTestingModule],
-      providers: [{provide: 'BASE_URL', useValue: 'https://localhost:7047/stories'}]
+      imports: [HttpClientTestingModule],
     }).compileComponents();
+  });
+ 
+  beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
-  });
-
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it(`should have the 'HackerNewsApiConsumer' title`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('HackerNewsApiConsumer');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hacker News Stories');
   });
-
+ 
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+ 
+  it('should create the app', () => {
+    expect(component).toBeTruthy();
+  });
+ 
+  it(`should have the 'HackerNewsApiConsumer' title`, () => {
+    expect(component.title).toEqual('HackerNewsApiConsumer');
+  });
+ 
+  it('should render title', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h1')?.textContent).toContain(
+      'Hacker News Stories'
+    );
+  });
+ 
   it('should show hacker news stories on load', () => {
-    var app = fixture.componentInstance;
-
     const stories: Story[] = [
-      {title: 'First Story', url: 'http://storyurl1.com/1'},
-      {title: 'Second Story', url: 'http://storyurl1.com/2'},
+      { title: 'Story 1', url: 'http://example.com/story1' },
+      { title: 'Story 2', url: 'http://example.com/story2' },
     ];
-
-    app.ngOnInit();
-    
-    const request =  httpTestingController.expectOne('https://localhost:7047/stories');
-    request.flush(stories);
-
-    expect(app.stories).toEqual(stories); 
-  })
+ 
+    spyOn(httpClient, 'get').and.returnValue(of(stories));
+    component.ngOnInit();
+ 
+    fixture.whenStable().then(() => {
+      expect(component.stories.length).toBe(2);
+      expect(component.stories).toEqual(stories);
+    });
+  });
+ 
+  it('should filter stories based on input text', () => {
+    const stories: Story[] = [
+      { title: 'Story 1', url: 'http://example.com/story1' },
+      { title: 'Story 2', url: 'http://example.com/story2' },
+    ];
+ 
+    component.stories = stories;
+ 
+    component.filterResults('Story 1');
+ 
+    expect(component.filteredStories.length).toBe(1);
+    expect(component.filteredStories[0].title).toBe('Story 1');
+  });
 });

@@ -23,7 +23,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(options => options
-	.WithOrigins("http://localhost:4200")
+	.WithOrigins("https://hackernewsapiconsumerapi.azure-api.net", "http://localhost:4200")
 	.AllowAnyHeader()
 	.AllowAnyMethod());
 app.UseHttpsRedirection();
