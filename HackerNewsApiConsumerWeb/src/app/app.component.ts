@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { Story } from './models/story'
 import { NgFor, NgIf } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { environment } from '../environments/environment';
  
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ export class AppComponent implements OnInit{
   stories: Story[] = [];
   page: any;
   filteredStories: Story[] = [];
+  API_URL = environment.API_URL;
  
   constructor(private httpClient: HttpClient) { }
   ngOnInit():void{
@@ -24,7 +26,7 @@ export class AppComponent implements OnInit{
     }
  
   fetchStories():void{
-    this.httpClient.get<Story[]>('https://localhost:7047/stories').subscribe((data)=>{
+    this.httpClient.get<Story[]>(this.API_URL + '/stories').subscribe((data)=>{
     this.stories = data;
     this.filteredStories = data;
     //console.log(this.stories);
